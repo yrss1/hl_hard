@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"hard/internal/domain/task"
 	"hard/pkg/store"
-	"time"
 )
 
 func (s *Service) ListTasks(ctx context.Context) (res []task.Response, err error) {
@@ -22,13 +21,6 @@ func (s *Service) ListTasks(ctx context.Context) (res []task.Response, err error
 }
 
 func (s *Service) CreateTask(ctx context.Context, req task.Request) (res task.Response, err error) {
-	var completedAt time.Time
-	if req.CompletedAt != nil {
-		completedAt, err = time.Parse("2006-01-02", *req.CompletedAt)
-		if err != nil {
-			return res, fmt.Errorf("failed to parse: %v", err)
-		}
-	}
 	data := task.Entity{
 		Title:       req.Title,
 		Description: req.Description,
@@ -36,8 +28,9 @@ func (s *Service) CreateTask(ctx context.Context, req task.Request) (res task.Re
 		Status:      req.Status,
 		AssigneeID:  req.AssigneeID,
 		ProjectID:   req.ProjectID,
-		CompletedAt: &completedAt,
+		CompletedAt: req.CompletedAt,
 	}
+
 	data.ID, err = s.taskRepository.Add(ctx, data)
 	if err != nil {
 		fmt.Printf("failed to create: %v\n", err)
@@ -62,14 +55,6 @@ func (s *Service) GetTask(ctx context.Context, id string) (res task.Response, er
 }
 
 func (s *Service) UpdateTask(ctx context.Context, id string, req task.Request) (err error) {
-	var completedAt time.Time
-	if req.CompletedAt != nil {
-		completedAt, err = time.Parse("2006-01-02", *req.CompletedAt)
-		if err != nil {
-			return fmt.Errorf("failed to parse: %v", err)
-		}
-	}
-
 	data := task.Entity{
 		Title:       req.Title,
 		Description: req.Description,
@@ -77,8 +62,9 @@ func (s *Service) UpdateTask(ctx context.Context, id string, req task.Request) (
 		Status:      req.Status,
 		AssigneeID:  req.AssigneeID,
 		ProjectID:   req.ProjectID,
-		CompletedAt: &completedAt,
+		CompletedAt: req.CompletedAt,
 	}
+
 	err = s.taskRepository.Update(ctx, id, data)
 	if err != nil && !errors.Is(err, store.ErrorNotFound) {
 		fmt.Printf("failed to update by id: %v\n", err)
@@ -99,7 +85,7 @@ func (s *Service) DeleteTask(ctx context.Context, id string) (err error) {
 }
 
 func (s *Service) SearchTasks(ctx context.Context, req task.Request) (res []task.Response, err error) {
-	data := task.Entity{
+	searchData := task.Entity{
 		Title:       req.Title,
 		Description: req.Description,
 		Priority:    req.Priority,
@@ -108,13 +94,13 @@ func (s *Service) SearchTasks(ctx context.Context, req task.Request) (res []task
 		ProjectID:   req.ProjectID,
 	}
 
-	data2, err := s.taskRepository.Search(ctx, data)
+	data, err := s.taskRepository.Search(ctx, searchData)
 	if err != nil {
 		fmt.Printf("failed to search tasks: %v\n", err)
 		return
 	}
 
-	res = task.ParseFromEntities(data2)
+	res = task.ParseFromEntities(data)
 
 	return
 }

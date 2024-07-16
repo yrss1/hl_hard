@@ -36,12 +36,15 @@ func (r *ProjectRepository) Add(ctx context.Context, data project.Entity) (id st
 		INSERT INTO projects (title, description, start_date, end_date, manager_id ) 
 		VALUES ($1, $2, $3, $4, $5) 
 		RETURNING id`
+
 	args := []any{data.Title, data.Description, data.StartDate, data.EndDate, data.ManagerID}
+
 	if err = r.db.QueryRowContext(ctx, query, args...).Scan(&id); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			err = store.ErrorNotFound
 		}
 	}
+
 	return
 }
 
@@ -58,17 +61,18 @@ func (r *ProjectRepository) Get(ctx context.Context, id string) (dest project.En
 			err = store.ErrorNotFound
 		}
 	}
+
 	return
 }
 
 func (r *ProjectRepository) Update(ctx context.Context, id string, data project.Entity) (err error) {
 	sets, args := r.prepareArgs(data)
 	if len(args) > 0 {
-
 		args = append(args, id)
 		sets = append(sets, "updated_at=CURRENT_TIMESTAMP")
+
 		query := fmt.Sprintf("UPDATE projects SET %s WHERE id=$%d RETURNING id", strings.Join(sets, ", "), len(args))
-		fmt.Println(query)
+
 		if err = r.db.QueryRowContext(ctx, query, args...).Scan(&id); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				err = store.ErrorNotFound
@@ -90,12 +94,12 @@ func (r *ProjectRepository) prepareArgs(data project.Entity) (sets []string, arg
 		sets = append(sets, fmt.Sprintf("description=$%d", len(args)))
 	}
 
-	if !data.StartDate.IsZero() {
+	if data.StartDate != nil {
 		args = append(args, data.StartDate)
 		sets = append(sets, fmt.Sprintf("start_date=$%d", len(args)))
 	}
 
-	if !data.EndDate.IsZero() {
+	if data.EndDate != nil {
 		args = append(args, data.EndDate)
 		sets = append(sets, fmt.Sprintf("end_date=$%d", len(args)))
 	}
@@ -121,6 +125,7 @@ func (r *ProjectRepository) Delete(ctx context.Context, id string) (err error) {
 			err = store.ErrorNotFound
 		}
 	}
+
 	return
 }
 
@@ -128,10 +133,10 @@ func (r *ProjectRepository) Search(ctx context.Context, data project.Entity) (de
 	query := "SELECT id, title, description, start_date, end_date, manager_id FROM projects WHERE 1=1"
 
 	sets, args := r.prepareArgs(data)
-
 	if len(sets) > 0 {
 		query += " AND " + strings.Join(sets, " AND ")
 	}
+
 	err = r.db.SelectContext(ctx, &dest, query, args...)
 
 	return

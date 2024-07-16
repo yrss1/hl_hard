@@ -35,12 +35,15 @@ func (r *UserRepository) Add(ctx context.Context, data user.Entity) (id string, 
 		INSERT INTO users (full_name, email, role) 
 		VALUES ($1, $2, $3) 
 		RETURNING id`
+
 	args := []any{data.FullName, data.Email, data.Role}
+
 	if err = r.db.QueryRowContext(ctx, query, args...).Scan(&id); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			err = store.ErrorNotFound
 		}
 	}
+
 	return
 }
 
@@ -57,15 +60,16 @@ func (r *UserRepository) Get(ctx context.Context, id string) (dest user.Entity, 
 			err = store.ErrorNotFound
 		}
 	}
+
 	return
 }
 
 func (r *UserRepository) Update(ctx context.Context, id string, data user.Entity) (err error) {
 	sets, args := r.prepareArgs(data)
 	if len(args) > 0 {
-
 		args = append(args, id)
 		sets = append(sets, "updated_at=CURRENT_TIMESTAMP")
+
 		query := fmt.Sprintf("UPDATE users SET %s WHERE id=$%d RETURNING id", strings.Join(sets, ", "), len(args))
 
 		if err = r.db.QueryRowContext(ctx, query, args...).Scan(&id); err != nil {
@@ -93,27 +97,18 @@ func (r *UserRepository) prepareArgs(data user.Entity) (sets []string, args []an
 		args = append(args, *data.Role)
 		sets = append(sets, fmt.Sprintf("role=$%d", len(args)))
 	}
+
 	return
 }
 
 func (r *UserRepository) Delete(ctx context.Context, id string) (err error) {
+	deleteQuery := `
+		DELETE FROM users
+		WHERE id=$1
+		RETURNING id`
+
 	args := []any{id}
 
-	updateQuery := `
-        UPDATE tasks
-        SET assignee_id = NULL
-        WHERE assignee_id = $1
-    `
-	if err = r.db.QueryRowContext(ctx, updateQuery, args...).Scan(&id); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			err = store.ErrorNotFound
-		}
-	}
-
-	deleteQuery := `
-        DELETE FROM users
-        WHERE id = $1
-    `
 	if err = r.db.QueryRowContext(ctx, deleteQuery, args...).Scan(&id); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			err = store.ErrorNotFound

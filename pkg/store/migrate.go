@@ -21,11 +21,6 @@ func Migrate(dataSourceName string) (err error) {
 		return
 	}
 
-	//if err = migrations.Drop(); err != nil {
-	//	if errors.Is(err, migrate.ErrNoChange) {
-	//		return nil
-	//	}
-	//}
 	if err = migrations.Up(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
 			return nil

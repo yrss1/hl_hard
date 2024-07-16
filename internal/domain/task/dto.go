@@ -41,6 +41,12 @@ func (s *Request) Validate() error {
 		return errors.New("project_id: cannot be blank")
 	}
 
+	if s.CompletedAt != nil {
+		if _, err := time.Parse("2006-01-02", *s.CompletedAt); err != nil {
+			return errors.New("completed_at: invalid format")
+		}
+	}
+
 	return nil
 }
 
@@ -53,14 +59,14 @@ func IsEmpty(data Request) bool {
 }
 
 type Response struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Priority    string    `json:"priority"`
-	Status      string    `json:"status"`
-	AssigneeID  string    `json:"assignee_id"`
-	ProjectID   string    `json:"project_id"`
-	CompletedAt time.Time `json:"completed_at"`
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Priority    string `json:"priority"`
+	Status      string `json:"status"`
+	AssigneeID  string `json:"assignee_id"`
+	ProjectID   string `json:"project_id"`
+	CompletedAt string `json:"completed_at"`
 }
 
 func ParseFromEntity(data Entity) (res Response) {
@@ -69,9 +75,11 @@ func ParseFromEntity(data Entity) (res Response) {
 		Title:       *data.Title,
 		Description: *data.Description,
 		Priority:    *data.Priority,
-		AssigneeID:  *data.AssigneeID,
 		ProjectID:   *data.ProjectID,
 		Status:      *data.Status,
+	}
+	if data.AssigneeID != nil {
+		res.AssigneeID = *data.AssigneeID
 	}
 	if data.CompletedAt != nil {
 		res.CompletedAt = *data.CompletedAt

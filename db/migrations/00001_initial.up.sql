@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS projects (
     start_date DATE NOT NULL,
     end_date DATE,
     manager_id INT NOT NULL,
-    FOREIGN KEY (manager_id) REFERENCES users(id)
+    FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
 CREATE TABLE IF NOT EXISTS tasks (
@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     assignee_id INT,
     project_id INT NOT NULL,
     completed_at DATE,
-    FOREIGN KEY (assignee_id) REFERENCES users(id),
-    FOREIGN KEY (project_id) REFERENCES projects(id)
+    FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
     );
 
 INSERT INTO users (full_name, email, role) VALUES

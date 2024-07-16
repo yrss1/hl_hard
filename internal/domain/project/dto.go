@@ -22,6 +22,15 @@ func (s *Request) Validate() error {
 
 	if s.StartDate == nil {
 		return errors.New("start_date: cannot be blank")
+	} else {
+		if _, err := time.Parse("2006-01-02", *s.StartDate); err != nil {
+			return errors.New("start_date: invalid format")
+		}
+	}
+	if s.EndDate != nil {
+		if _, err := time.Parse("2006-01-02", *s.EndDate); err != nil {
+			return errors.New("end_date: invalid format")
+		}
 	}
 
 	if s.ManagerID == nil {
@@ -48,12 +57,12 @@ func TimeParse(data *string) (res time.Time, err error) {
 }
 
 type Response struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	StartDate   time.Time `json:"start_date"`
-	EndDate     time.Time `json:"end_date"`
-	ManagerID   string    `json:"manager_id"`
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	StartDate   string `json:"start_date"`
+	EndDate     string `json:"end_date"`
+	ManagerID   string `json:"manager_id"`
 }
 
 func ParseFromEntity(data Entity) (res Response) {
