@@ -3,7 +3,6 @@ package tasker
 import (
 	"context"
 	"errors"
-	"fmt"
 	"hard/internal/domain/task"
 	"hard/internal/domain/user"
 	"hard/pkg/store"
@@ -12,7 +11,7 @@ import (
 func (s *Service) ListUsers(ctx context.Context) (res []user.Response, err error) {
 	data, err := s.userRepository.List(ctx)
 	if err != nil {
-		fmt.Printf("failed to select: %v", err)
+		//fmt.Printf("failed to select: %v", err)
 		return
 	}
 
@@ -30,7 +29,7 @@ func (s *Service) CreateUser(ctx context.Context, req user.Request) (res user.Re
 
 	data.ID, err = s.userRepository.Add(ctx, data)
 	if err != nil {
-		fmt.Printf("failed to create: %v\n", err)
+		//fmt.Printf("failed to create: %v\n", err)
 		return
 	}
 
@@ -42,7 +41,7 @@ func (s *Service) CreateUser(ctx context.Context, req user.Request) (res user.Re
 func (s *Service) GetUser(ctx context.Context, id string) (res user.Response, err error) {
 	data, err := s.userRepository.Get(ctx, id)
 	if err != nil && !errors.Is(err, store.ErrorNotFound) {
-		fmt.Printf("failed to get by id: %v", err)
+		//fmt.Printf("failed to get by id: %v", err)
 		return
 	}
 
@@ -54,12 +53,12 @@ func (s *Service) GetUser(ctx context.Context, id string) (res user.Response, er
 func (s *Service) UpdateUser(ctx context.Context, id string, req user.Request) (err error) {
 	data := user.Entity{
 		FullName: req.FullName,
-		Email:    req.Email, // тут было типа &req.Email
+		Email:    req.Email,
 		Role:     req.Role,
 	}
 	err = s.userRepository.Update(ctx, id, data)
 	if err != nil && !errors.Is(err, store.ErrorNotFound) {
-		fmt.Printf("failed to update by id: %v\n", err)
+		//fmt.Printf("failed to update by id: %v\n", err)
 		return
 	}
 
@@ -79,7 +78,7 @@ func (s *Service) DeleteUser(ctx context.Context, id string) (err error) {
 func (s *Service) SearchUser(ctx context.Context, name string, email string) (res []user.Response, err error) {
 	data, err := s.userRepository.Search(ctx, name, email)
 	if err != nil && !errors.Is(err, store.ErrorNotFound) {
-		fmt.Printf("failed to search user: %v\n", err)
+		//fmt.Printf("failed to search user: %v\n", err)
 		return
 	}
 
@@ -91,7 +90,7 @@ func (s *Service) SearchUser(ctx context.Context, name string, email string) (re
 func (s *Service) GetTasksByUser(ctx context.Context, id string) (res []task.Response, err error) {
 	data, err := s.userRepository.ListTasks(ctx, id)
 	if err != nil && !errors.Is(err, store.ErrorNotFound) {
-		fmt.Printf("failed to search tasks by user: %v\n", err)
+		//fmt.Printf("failed to search tasks by user: %v\n", err)
 		return
 	}
 
