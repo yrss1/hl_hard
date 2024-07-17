@@ -5,40 +5,51 @@ import (
 	"net/http"
 )
 
+type Object struct {
+	Data    any    `json:"data,omitempty"`
+	Message string `json:"message,omitempty"`
+	Success bool   `json:"success"`
+}
+
 func OK(c *gin.Context, data any) {
-	c.JSON(http.StatusOK, gin.H{
-		"Success": true,
-		"Data":    data,
-	})
+	h := Object{
+		Success: true,
+		Data:    data,
+	}
+	c.JSON(http.StatusOK, h)
 }
 
 func Created(c *gin.Context, data any) {
-	c.JSON(http.StatusCreated, gin.H{
-		"Success": true,
-		"Data":    data,
-	})
+	h := Object{
+		Success: true,
+		Data:    data,
+	}
+	c.JSON(http.StatusCreated, h)
 }
 
 func BadRequest(c *gin.Context, err error, data any) {
-	c.JSON(http.StatusBadRequest, gin.H{
-		"Success": false,
-		"Message": err.Error(),
-		"Data":    data,
-	})
+	h := Object{
+		Success: false,
+		Message: err.Error(),
+		Data:    data,
+	}
+	c.JSON(http.StatusBadRequest, h)
 }
 
 func NotFound(c *gin.Context, err error) {
-	c.JSON(http.StatusNotFound, gin.H{
-		"Success": false,
-		"Message": err.Error(),
-	})
+	h := Object{
+		Success: false,
+		Message: err.Error(),
+	}
+	c.JSON(http.StatusNotFound, h)
 }
 
 func InternalServerError(c *gin.Context, err error) {
-	c.JSON(http.StatusInternalServerError, gin.H{
-		"Success": false,
-		"Message": err.Error(),
-	})
+	h := Object{
+		Success: false,
+		Message: err.Error(),
+	}
+	c.JSON(http.StatusInternalServerError, h)
 }
 
 func MethodNotAllowedMiddleware() gin.HandlerFunc {
@@ -49,7 +60,6 @@ func MethodNotAllowedMiddleware() gin.HandlerFunc {
 			http.MethodPut:    true,
 			http.MethodDelete: true,
 		}
-
 		if !allowedMethods[c.Request.Method] {
 			c.JSON(http.StatusMethodNotAllowed, gin.H{"error": "Method Not Allowed"})
 			c.Abort()

@@ -94,25 +94,25 @@ func TestList(t *testing.T) {
 			mockRepoOutput: mockTasks,
 			mockRepoError:  nil,
 			expectedStatus: http.StatusOK,
-			expectedBody: `{"Data":[{"id":"1","title":"Task 1","description":"Description of Task 1",
+			expectedBody: `{"data":[{"id":"1","title":"Task 1","description":"Description of Task 1",
 				"priority":"High","status":"Active","assignee_id":"1","project_id":"1","completed_at":""},
 				{"id":"2","title":"Task 2","description":"Description of Task 2",
 				"priority":"Medium","status":"Pending","assignee_id":"2","project_id":"2","completed_at":""}],
-				"Success":true}`,
+				"success":true}`,
 		},
 		{
 			name:           "Empty List",
 			mockRepoOutput: []task.Entity{},
 			mockRepoError:  nil,
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"Data":[],"Success":true}`,
+			expectedBody:   `{"data":[],"success":true}`,
 		},
 		{
 			name:           "Internal Server Error",
 			mockRepoOutput: nil,
 			mockRepoError:  errors.New("repository error"),
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   `{"Message":"repository error","Success":false}`,
+			expectedBody:   `{"message":"repository error","success":false}`,
 		},
 	}
 
@@ -162,7 +162,7 @@ func TestAdd(t *testing.T) {
 			mockRepoOutput: "new-task-id",
 			mockRepoError:  nil,
 			expectedStatus: http.StatusCreated,
-			expectedBody:   `{"Data":{"id":"new-task-id","title":"test tester","description":"A new task description","priority":"High","status":"Active","assignee_id":"1","project_id":"2","completed_at":""},"Success":true}`,
+			expectedBody:   `{"data":{"id":"new-task-id","title":"test tester","description":"A new task description","priority":"High","status":"Active","assignee_id":"1","project_id":"2","completed_at":""},"success":true}`,
 		},
 		{
 			name:           "Bad Request: Missing Title",
@@ -170,7 +170,7 @@ func TestAdd(t *testing.T) {
 			mockRepoOutput: "new-task-id",
 			mockRepoError:  nil,
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"Data":{"id":"","title":null,"description":"A new task description","priority":"High","status":"Active","assignee_id":"1","project_id":"2","completed_at":null},"Message":"title: cannot be blank","Success":false}`,
+			expectedBody:   `{"data":{"id":"","title":null,"description":"A new task description","priority":"High","status":"Active","assignee_id":"1","project_id":"2","completed_at":null},"message":"title: cannot be blank","success":false}`,
 		},
 		{
 			name:           "Invalid JSON Payload",
@@ -179,7 +179,7 @@ func TestAdd(t *testing.T) {
 			mockRepoOutput: "",
 			mockRepoError:  nil,
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"Data":{"id":"","title":null,"description":null,"priority":null,"status":null,"assignee_id":null,"project_id":null,"completed_at":null},"Message":"invalid character '}' looking for beginning of object key string","Success":false}`,
+			expectedBody:   `{"data":{"id":"","title":null,"description":null,"priority":null,"status":null,"assignee_id":null,"project_id":null,"completed_at":null},"message":"invalid character '}' looking for beginning of object key string","success":false}`,
 		},
 		{
 			name:           "Internal Server Error",
@@ -195,7 +195,7 @@ func TestAdd(t *testing.T) {
 			},
 			mockRepoError:  errors.New("repository error"),
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   `{"Message":"repository error","Success":false}`,
+			expectedBody:   `{"message":"repository error","success":false}`,
 		},
 	}
 
@@ -250,8 +250,8 @@ func TestGet(t *testing.T) {
 			mockRepoError:  nil,
 			taskID:         "1",
 			expectedStatus: http.StatusOK,
-			expectedBody: `{"Data":{"id":"1","title":"Design Homepage","description":"Create a responsive homepage design",
-		     "priority":"High","status":"Active","assignee_id":"4","project_id":"1","completed_at":""},"Success":true}`,
+			expectedBody: `{"data":{"id":"1","title":"Design Homepage","description":"Create a responsive homepage design",
+		     "priority":"High","status":"Active","assignee_id":"4","project_id":"1","completed_at":""},"success":true}`,
 		},
 		{
 			name:           "Task Not Found",
@@ -259,7 +259,7 @@ func TestGet(t *testing.T) {
 			mockRepoError:  store.ErrorNotFound,
 			taskID:         "99",
 			expectedStatus: http.StatusNotFound,
-			expectedBody:   `{"Message":"error not found","Success":false}`,
+			expectedBody:   `{"message":"error not found","success":false}`,
 		},
 		{
 			name:           "Internal Server Error",
@@ -267,7 +267,7 @@ func TestGet(t *testing.T) {
 			mockRepoError:  errors.New("repository error"),
 			taskID:         "1",
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   `{"Message":"repository error","Success":false}`,
+			expectedBody:   `{"message":"repository error","success":false}`,
 		},
 	}
 
@@ -306,28 +306,28 @@ func TestUpdate(t *testing.T) {
 			inputBody:      `{"title":"Updated Task","description":"This is an updated task","priority":"Medium","status":"InProgress","assignee_id":"2","project_id":"3"}`,
 			mockRepoError:  nil,
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"Data":"ok","Success":true}`,
+			expectedBody:   `{"data":"ok","success":true}`,
 		},
 		{
 			name:           "Invalid JSON Payload",
 			inputBody:      `{"title":"Updated Task","description":"This is an updated task","priority":"Medium","status":"InProgress","assignee_id":"2","project_id":"3",}`,
 			mockRepoError:  nil,
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"Data":{"id":"","title":null,"description":null,"priority":null,"status":null,"assignee_id":null,"project_id":null,"completed_at":null},"Message":"invalid character '}' looking for beginning of object key string","Success":false}`,
+			expectedBody:   `{"data":{"id":"","title":null,"description":null,"priority":null,"status":null,"assignee_id":null,"project_id":null,"completed_at":null},"message":"invalid character '}' looking for beginning of object key string","success":false}`,
 		},
 		{
 			name:           "Task Not Found",
 			inputBody:      `{"title":"Updated Task","description":"This is an updated task","priority":"Medium","status":"InProgress","assignee_id":"2","project_id":"3"}`,
 			mockRepoError:  store.ErrorNotFound,
 			expectedStatus: http.StatusNotFound,
-			expectedBody:   `{"Message":"error not found","Success":false}`,
+			expectedBody:   `{"message":"error not found","success":false}`,
 		},
 		{
 			name:           "Internal Server Error",
 			inputBody:      `{"title":"Updated Task","description":"This is an updated task","priority":"Medium","status":"InProgress","assignee_id":"2","project_id":"3"}`,
 			mockRepoError:  errors.New("repository error"),
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   `{"Message":"repository error","Success":false}`,
+			expectedBody:   `{"message":"repository error","success":false}`,
 		},
 	}
 
@@ -368,21 +368,21 @@ func TestDelete(t *testing.T) {
 			mockRepoError:  nil,
 			taskID:         "1",
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"Data":"1","Success":true}`,
+			expectedBody:   `{"data":"1","success":true}`,
 		},
 		{
 			name:           "Task Not Found",
 			mockRepoError:  store.ErrorNotFound,
 			taskID:         "99",
 			expectedStatus: http.StatusNotFound,
-			expectedBody:   `{"Message":"error not found","Success":false}`,
+			expectedBody:   `{"message":"error not found","success":false}`,
 		},
 		{
 			name:           "Internal Server Error",
 			mockRepoError:  errors.New("repository error"),
 			taskID:         "1",
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   `{"Message":"repository error","Success":false}`,
+			expectedBody:   `{"message":"repository error","success":false}`,
 		},
 	}
 
@@ -440,8 +440,8 @@ func TestSearch(t *testing.T) {
 			},
 			mockRepoError:  nil,
 			expectedStatus: http.StatusOK,
-			expectedBody: `{"Data":[{"id":"1","title":"test task","description":"A test task description",
-			"priority":"High","status":"Active","assignee_id":"1","project_id":"2","completed_at":""}],"Success":true}`,
+			expectedBody: `{"data":[{"id":"1","title":"test task","description":"A test task description",
+			"priority":"High","status":"Active","assignee_id":"1","project_id":"2","completed_at":""}],"success":true}`,
 		},
 		{
 			name:           "Missing Query Parameters",
@@ -449,7 +449,7 @@ func TestSearch(t *testing.T) {
 			mockRepoOutput: nil,
 			mockRepoError:  nil,
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   `{"Data":null,"Message":"query parameters required","Success":false}`,
+			expectedBody:   `{"message":"query parameters required","success":false}`,
 		},
 		{
 			name:           "Empty Result Search",
@@ -457,7 +457,7 @@ func TestSearch(t *testing.T) {
 			mockRepoOutput: []task.Entity{},
 			mockRepoError:  nil,
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"Data":[],"Success":true}`,
+			expectedBody:   `{"data":[],"success":true}`,
 		},
 		{
 			name: "Internal Server Error",
@@ -467,7 +467,7 @@ func TestSearch(t *testing.T) {
 			mockRepoOutput: nil,
 			mockRepoError:  errors.New("repository error"),
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   `{"Message":"repository error","Success":false}`,
+			expectedBody:   `{"message":"repository error","success":false}`,
 		},
 	}
 

@@ -20,6 +20,7 @@ func NewProjectHandler(s *tasker.Service) *ProjectHandler {
 	return &ProjectHandler{taskerService: s}
 }
 
+// Routes sets up the routes for project management
 func (h *ProjectHandler) Routes(r *gin.RouterGroup) {
 	api := r.Group("/projects")
 	{
@@ -32,10 +33,18 @@ func (h *ProjectHandler) Routes(r *gin.RouterGroup) {
 		api.DELETE("/:id", h.delete)
 
 		api.GET("/search", h.search)
-
 	}
 }
 
+// listProjects godoc
+//	@Summary		List all projects
+//	@Description	Get a list of all projects
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		project.Response
+//	@Failure		500	{object}	response.Object
+//	@Router			/projects [get]
 func (h *ProjectHandler) list(c *gin.Context) {
 	res, err := h.taskerService.ListProjects(c)
 	if err != nil {
@@ -45,6 +54,18 @@ func (h *ProjectHandler) list(c *gin.Context) {
 
 	response.OK(c, res)
 }
+
+// addProject godoc
+//	@Summary		Add a new project
+//	@Description	Create a new project
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Param			project	body		project.Request	true	"Project Request"
+//	@Success		200		{object}	project.Response
+//	@Failure		400		{object}	response.Object
+//	@Failure		500		{object}	response.Object
+//	@Router			/projects [post]
 func (h *ProjectHandler) add(c *gin.Context) {
 	req := project.Request{}
 
@@ -71,6 +92,17 @@ func (h *ProjectHandler) add(c *gin.Context) {
 	response.OK(c, res)
 }
 
+// getProject godoc
+//	@Summary		Get project by ID
+//	@Description	Get details of a specific project by ID
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Project ID"
+//	@Success		200	{object}	project.Response
+//	@Failure		404	{object}	response.Object
+//	@Failure		500	{object}	response.Object
+//	@Router			/projects/{id} [get]
 func (h *ProjectHandler) get(c *gin.Context) {
 	id := c.Param("id")
 
@@ -88,6 +120,19 @@ func (h *ProjectHandler) get(c *gin.Context) {
 	response.OK(c, res)
 }
 
+// updateProject godoc
+//	@Summary		Update a project
+//	@Description	Update an existing project by ID
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string			true	"Project ID"
+//	@Param			project	body		project.Request	true	"Project Request"
+//	@Success		200		{string}	string			"ok"
+//	@Failure		400		{object}	response.Object
+//	@Failure		404		{object}	response.Object
+//	@Failure		500		{object}	response.Object
+//	@Router			/projects/{id} [put]
 func (h *ProjectHandler) update(c *gin.Context) {
 	id := c.Param("id")
 	req := project.Request{}
@@ -116,6 +161,17 @@ func (h *ProjectHandler) update(c *gin.Context) {
 	response.OK(c, "ok")
 }
 
+// deleteProject godoc
+//	@Summary		Delete a project
+//	@Description	Delete a project by ID
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Project ID"
+//	@Success		200	{string}	string	"Deleted Project ID"
+//	@Failure		404	{object}	response.Object
+//	@Failure		500	{object}	response.Object
+//	@Router			/projects/{id} [delete]
 func (h *ProjectHandler) delete(c *gin.Context) {
 	id := c.Param("id")
 
@@ -132,6 +188,18 @@ func (h *ProjectHandler) delete(c *gin.Context) {
 	response.OK(c, id)
 }
 
+// searchProjects godoc
+//	@Summary		Search projects
+//	@Description	Search projects by title or manager_id
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Param			title		query		string	false	"Project Title"
+//	@Param			manager_id	query		string	false	"Manager ID"
+//	@Success		200			{array}		project.Response
+//	@Failure		400			{object}	response.Object
+//	@Failure		500			{object}	response.Object
+//	@Router			/projects/search [get]
 func (h *ProjectHandler) search(c *gin.Context) {
 	req := project.Request{
 		Title:     helpers.GetStringPtr(c.Query("title")),
@@ -151,6 +219,17 @@ func (h *ProjectHandler) search(c *gin.Context) {
 	response.OK(c, res)
 }
 
+// listTasks godoc
+//	@Summary		List tasks for a project
+//	@Description	Get a list of all tasks for a specific project
+//	@Tags			projects
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Project ID"
+//	@Success		200	{array}		task.Response
+//	@Failure		404	{object}	response.Object
+//	@Failure		500	{object}	response.Object
+//	@Router			/projects/{id}/tasks [get]
 func (h *ProjectHandler) listTasks(c *gin.Context) {
 	id := c.Param("id")
 

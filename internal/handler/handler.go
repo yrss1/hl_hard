@@ -2,6 +2,9 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"hard/docs"
 	"hard/internal/config"
 	"hard/internal/handler/http"
 	"hard/internal/service/tasker"
@@ -36,6 +39,11 @@ func New(d Dependencies, configs ...Configuration) (h *Handler, err error) {
 func WithHTTPHandler() Configuration {
 	return func(h *Handler) (err error) {
 		h.HTTP = router.New()
+
+		url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+		docs.SwaggerInfo.BasePath = h.dependencies.Configs.APP.Path
+		h.HTTP.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+
 		userHandler := http.NewUserHandler(h.dependencies.TaskerService)
 		taskHandler := http.NewTaskHandler(h.dependencies.TaskerService)
 		projectHandler := http.NewProjectHandler(h.dependencies.TaskerService)

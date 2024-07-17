@@ -20,6 +20,7 @@ func NewTaskHandler(s *tasker.Service) *TaskHandler {
 	return &TaskHandler{taskerService: s}
 }
 
+// Routes sets up the routes for task management
 func (h *TaskHandler) Routes(r *gin.RouterGroup) {
 	api := r.Group("/tasks")
 	{
@@ -31,10 +32,18 @@ func (h *TaskHandler) Routes(r *gin.RouterGroup) {
 		api.DELETE("/:id", h.delete)
 
 		api.GET("/search", h.search)
-
 	}
 }
 
+// listTasks godoc
+//	@Summary		List all tasks
+//	@Description	Get a list of all tasks
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		task.Response
+//	@Failure		500	{object}	response.Object
+//	@Router			/tasks [get]
 func (h *TaskHandler) list(c *gin.Context) {
 	res, err := h.taskerService.ListTasks(c)
 	if err != nil {
@@ -45,6 +54,18 @@ func (h *TaskHandler) list(c *gin.Context) {
 	//response.InternalServerError(c, err)
 	response.OK(c, res)
 }
+
+// addTask godoc
+//	@Summary		Add a new task
+//	@Description	Create a new task
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			task	body		task.Request	true	"Task Request"
+//	@Success		201		{object}	task.Response
+//	@Failure		400		{object}	response.Object
+//	@Failure		500		{object}	response.Object
+//	@Router			/tasks [post]
 func (h *TaskHandler) add(c *gin.Context) {
 	req := task.Request{}
 
@@ -71,6 +92,17 @@ func (h *TaskHandler) add(c *gin.Context) {
 	response.Created(c, res)
 }
 
+// getTask godoc
+//	@Summary		Get task by ID
+//	@Description	Get details of a specific task by ID
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Task ID"
+//	@Success		200	{object}	task.Response
+//	@Failure		404	{object}	response.Object
+//	@Failure		500	{object}	response.Object
+//	@Router			/tasks/{id} [get]
 func (h *TaskHandler) get(c *gin.Context) {
 	id := c.Param("id")
 
@@ -88,6 +120,19 @@ func (h *TaskHandler) get(c *gin.Context) {
 	response.OK(c, res)
 }
 
+// updateTask godoc
+//	@Summary		Update a task
+//	@Description	Update an existing task by ID
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string			true	"Task ID"
+//	@Param			task	body		task.Request	true	"Task Request"
+//	@Success		200		{string}	string			"ok"
+//	@Failure		400		{object}	response.Object
+//	@Failure		404		{object}	response.Object
+//	@Failure		500		{object}	response.Object
+//	@Router			/tasks/{id} [put]
 func (h *TaskHandler) update(c *gin.Context) {
 	id := c.Param("id")
 	req := task.Request{}
@@ -117,6 +162,17 @@ func (h *TaskHandler) update(c *gin.Context) {
 	response.OK(c, "ok")
 }
 
+// deleteTask godoc
+//	@Summary		Delete a task
+//	@Description	Delete a task by ID
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"Task ID"
+//	@Success		200	{string}	string	"Deleted Task ID"
+//	@Failure		404	{object}	response.Object
+//	@Failure		500	{object}	response.Object
+//	@Router			/tasks/{id} [delete]
 func (h *TaskHandler) delete(c *gin.Context) {
 	id := c.Param("id")
 
@@ -133,6 +189,21 @@ func (h *TaskHandler) delete(c *gin.Context) {
 	response.OK(c, id)
 }
 
+// searchTasks godoc
+//	@Summary		Search tasks
+//	@Description	Search tasks by title, priority, status, assignee_id, or project_id
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			title		query		string	false	"Task Title"
+//	@Param			priority	query		string	false	"Task Priority"
+//	@Param			status		query		string	false	"Task Status"
+//	@Param			assignee_id	query		string	false	"Assignee ID"
+//	@Param			project_id	query		string	false	"Project ID"
+//	@Success		200			{array}		task.Response
+//	@Failure		400			{object}	response.Object
+//	@Failure		500			{object}	response.Object
+//	@Router			/tasks/search [get]
 func (h *TaskHandler) search(c *gin.Context) {
 	data := task.Request{
 		Title:      helpers.GetStringPtr(c.Query("title")),
