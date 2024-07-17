@@ -47,11 +47,14 @@ func WithHTTPHandler() Configuration {
 		userHandler := http.NewUserHandler(h.dependencies.TaskerService)
 		taskHandler := http.NewTaskHandler(h.dependencies.TaskerService)
 		projectHandler := http.NewProjectHandler(h.dependencies.TaskerService)
+		heathCheck := http.NewHealthHandler()
 		api := h.HTTP.Group("/api/v1/")
 		{
 			userHandler.Routes(api)
 			taskHandler.Routes(api)
 			projectHandler.Routes(api)
+
+			heathCheck.Routes(api)
 		}
 		return
 	}

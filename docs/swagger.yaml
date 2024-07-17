@@ -100,6 +100,21 @@ definitions:
 info:
   contact: {}
 paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: HealthСheck
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: HealthCheck
+      tags:
+      - health
   /projects:
     get:
       consumes:
