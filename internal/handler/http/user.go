@@ -35,6 +35,7 @@ func (h *UserHandler) Routes(r *gin.RouterGroup) {
 }
 
 // listUsers godoc
+//
 //	@Summary		List all users
 //	@Description	Get a list of all users
 //	@Tags			users
@@ -54,6 +55,7 @@ func (h *UserHandler) list(c *gin.Context) {
 }
 
 // addUser godoc
+//
 //	@Summary		Add a new user
 //	@Description	Create a new user
 //	@Tags			users
@@ -87,6 +89,7 @@ func (h *UserHandler) add(c *gin.Context) {
 }
 
 // getUser godoc
+//
 //	@Summary		Get user by ID
 //	@Description	Get details of a specific user by ID
 //	@Tags			users
@@ -115,6 +118,7 @@ func (h *UserHandler) get(c *gin.Context) {
 }
 
 // updateUser godoc
+//
 //	@Summary		Update a user
 //	@Description	Update an existing user by ID
 //	@Tags			users
@@ -155,6 +159,7 @@ func (h *UserHandler) update(c *gin.Context) {
 }
 
 // deleteUser godoc
+//
 //	@Summary		Delete a user
 //	@Description	Delete a user by ID
 //	@Tags			users
@@ -182,6 +187,7 @@ func (h *UserHandler) delete(c *gin.Context) {
 }
 
 // searchUsers godoc
+//
 //	@Summary		Search users
 //	@Description	Search users by name or email
 //	@Tags			users
@@ -211,7 +217,8 @@ func (h *UserHandler) search(c *gin.Context) {
 }
 
 // listUserTasks godoc
-//	@Summary		List tasks for a user
+//
+//	@Summary		List tasks by user
 //	@Description	Get a list of tasks for a specific user by ID
 //	@Tags			users
 //	@Accept			json

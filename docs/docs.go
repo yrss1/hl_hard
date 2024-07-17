@@ -298,7 +298,7 @@ const docTemplate = `{
                 "tags": [
                     "projects"
                 ],
-                "summary": "List tasks for a project",
+                "summary": "List tasks by project",
                 "parameters": [
                     {
                         "type": "string",
@@ -905,7 +905,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "List tasks for a user",
+                "summary": "List tasks by user",
                 "parameters": [
                     {
                         "type": "string",

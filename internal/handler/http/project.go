@@ -37,6 +37,7 @@ func (h *ProjectHandler) Routes(r *gin.RouterGroup) {
 }
 
 // listProjects godoc
+//
 //	@Summary		List all projects
 //	@Description	Get a list of all projects
 //	@Tags			projects
@@ -56,6 +57,7 @@ func (h *ProjectHandler) list(c *gin.Context) {
 }
 
 // addProject godoc
+//
 //	@Summary		Add a new project
 //	@Description	Create a new project
 //	@Tags			projects
@@ -93,6 +95,7 @@ func (h *ProjectHandler) add(c *gin.Context) {
 }
 
 // getProject godoc
+//
 //	@Summary		Get project by ID
 //	@Description	Get details of a specific project by ID
 //	@Tags			projects
@@ -121,6 +124,7 @@ func (h *ProjectHandler) get(c *gin.Context) {
 }
 
 // updateProject godoc
+//
 //	@Summary		Update a project
 //	@Description	Update an existing project by ID
 //	@Tags			projects
@@ -162,6 +166,7 @@ func (h *ProjectHandler) update(c *gin.Context) {
 }
 
 // deleteProject godoc
+//
 //	@Summary		Delete a project
 //	@Description	Delete a project by ID
 //	@Tags			projects
@@ -189,6 +194,7 @@ func (h *ProjectHandler) delete(c *gin.Context) {
 }
 
 // searchProjects godoc
+//
 //	@Summary		Search projects
 //	@Description	Search projects by title or manager_id
 //	@Tags			projects
@@ -220,7 +226,8 @@ func (h *ProjectHandler) search(c *gin.Context) {
 }
 
 // listTasks godoc
-//	@Summary		List tasks for a project
+//
+//	@Summary		List tasks by project
 //	@Description	Get a list of all tasks for a specific project
 //	@Tags			projects
 //	@Accept			json

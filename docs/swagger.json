@@ -287,7 +287,7 @@
                 "tags": [
                     "projects"
                 ],
-                "summary": "List tasks for a project",
+                "summary": "List tasks by project",
                 "parameters": [
                     {
                         "type": "string",
@@ -894,7 +894,7 @@
                 "tags": [
                     "users"
                 ],
-                "summary": "List tasks for a user",
+                "summary": "List tasks by user",
                 "parameters": [
                     {
                         "type": "string",
