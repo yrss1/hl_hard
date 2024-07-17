@@ -41,8 +41,9 @@ func (s *Service) CreateUser(ctx context.Context, req user.Request) (res user.Re
 
 func (s *Service) GetUser(ctx context.Context, id string) (res user.Response, err error) {
 	data, err := s.userRepository.Get(ctx, id)
-	if err != nil {
-		fmt.Printf("failed to get by id: %v\n", err)
+	if err != nil && !errors.Is(err, store.ErrorNotFound) {
+		fmt.Printf("failed to get by id: %v", err)
+		return
 	}
 
 	res = user.ParseFromEntity(data)
@@ -68,7 +69,7 @@ func (s *Service) UpdateUser(ctx context.Context, id string, req user.Request) (
 func (s *Service) DeleteUser(ctx context.Context, id string) (err error) {
 	err = s.userRepository.Delete(ctx, id)
 	if err != nil && !errors.Is(err, store.ErrorNotFound) {
-		fmt.Printf("failed to delete by id: %v\n", err)
+		//fmt.Printf("failed to delete by id: %v\n", err)
 		return
 	}
 
@@ -77,7 +78,7 @@ func (s *Service) DeleteUser(ctx context.Context, id string) (err error) {
 
 func (s *Service) SearchUser(ctx context.Context, name string, email string) (res []user.Response, err error) {
 	data, err := s.userRepository.Search(ctx, name, email)
-	if err != nil {
+	if err != nil && !errors.Is(err, store.ErrorNotFound) {
 		fmt.Printf("failed to search user: %v\n", err)
 		return
 	}

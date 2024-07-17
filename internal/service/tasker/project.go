@@ -42,7 +42,7 @@ func (s *Service) CreateProject(ctx context.Context, req project.Request) (res p
 
 func (s *Service) GetProject(ctx context.Context, id string) (res project.Response, err error) {
 	data, err := s.projectRepository.Get(ctx, id)
-	if err != nil {
+	if err != nil && !errors.Is(err, store.ErrorNotFound) {
 		fmt.Printf("failed to get by id: %v", err)
 		return
 	}
@@ -72,7 +72,7 @@ func (s *Service) UpdateProject(ctx context.Context, id string, req project.Requ
 
 func (s *Service) DeleteProject(ctx context.Context, id string) (err error) {
 	err = s.projectRepository.Delete(ctx, id)
-	if err != nil {
+	if err != nil && !errors.Is(err, store.ErrorNotFound) {
 		fmt.Printf("failed to delete by id %v\n", err)
 		return
 	}
@@ -87,7 +87,7 @@ func (s *Service) SearchProjects(ctx context.Context, req project.Request) (res 
 	}
 
 	data, err := s.projectRepository.Search(ctx, searchData)
-	if err != nil {
+	if err != nil && !errors.Is(err, store.ErrorNotFound) {
 		fmt.Printf("failed to search projects: %v\n", err)
 		return
 	}
