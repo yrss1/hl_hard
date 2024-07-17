@@ -40,9 +40,8 @@ func WithHTTPHandler() Configuration {
 	return func(h *Handler) (err error) {
 		h.HTTP = router.New()
 
-		url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 		docs.SwaggerInfo.BasePath = h.dependencies.Configs.APP.Path
-		h.HTTP.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+		h.HTTP.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 		userHandler := http.NewUserHandler(h.dependencies.TaskerService)
 		taskHandler := http.NewTaskHandler(h.dependencies.TaskerService)
