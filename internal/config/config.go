@@ -39,7 +39,7 @@ func New() (cfg Configs, err error) {
 	if err != nil {
 		return
 	}
-	godotenv.Load(filepath.Join(root, ".env"))
+	godotenv.Load(filepath.Join(root, ".env.dest"))
 
 	cfg.APP = AppConfig{
 		Mode:    defaultAppMode,
