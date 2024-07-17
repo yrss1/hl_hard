@@ -41,7 +41,8 @@ func (h *TaskHandler) list(c *gin.Context) {
 		response.InternalServerError(c, err)
 		return
 	}
-
+	//err := errors.New("repository error")
+	//response.InternalServerError(c, err)
 	response.OK(c, res)
 }
 func (h *TaskHandler) add(c *gin.Context) {

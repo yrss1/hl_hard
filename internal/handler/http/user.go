@@ -114,8 +114,6 @@ func (h *UserHandler) delete(c *gin.Context) {
 	if err := h.taskerService.DeleteUser(c, id); err != nil {
 		switch {
 		case errors.Is(err, store.ErrorNotFound):
-			fmt.Println(err)
-			fmt.Println("im gere")
 			response.NotFound(c, err)
 		default:
 			response.InternalServerError(c, err)
